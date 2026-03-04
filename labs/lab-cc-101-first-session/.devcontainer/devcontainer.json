@@ -8,7 +8,7 @@
   // Students get full Claude Code functionality powered by DeepSeek/Groq —
   // no Anthropic subscription needed.
   "remoteEnv": {
-    "ANTHROPIC_BASE_URL": "https://litellm-proxy.railway.app",
+    "ANTHROPIC_BASE_URL": "https://litellm-anthropic-proxy-production.up.railway.app",
     "ANTHROPIC_API_KEY": "lab-ai-coding-2026"
   },
 
