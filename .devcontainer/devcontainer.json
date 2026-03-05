@@ -15,22 +15,5 @@
             },
             "extensions": []
         }
-    },
-    "secrets": {
-        "GOOGLE_API_KEY": {
-            "description": "Google AI Studio API key for Gemini CLI (free at aistudio.google.com)"
-        },
-        "GROQ_API_KEY": {
-            "description": "Groq API key for Aider (free at console.groq.com)"
-        },
-        "ANTHROPIC_API_KEY": {
-            "description": "Anthropic API key for Claude Code (paid)"
-        },
-        "OPENAI_API_KEY": {
-            "description": "OpenAI API key for Codex CLI (paid)"
-        },
-        "DEEPSEEK_API_KEY": {
-            "description": "DeepSeek API key for Aider (very cheap at platform.deepseek.com)"
-        }
     }
 }
