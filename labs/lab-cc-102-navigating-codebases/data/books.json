@@ -1,0 +1,12 @@
+[
+  { "isbn": "9780743273565", "title": "The Great Gatsby", "author": "F. Scott Fitzgerald", "genre": "Fiction", "price": 12.99, "stock": 42 },
+  { "isbn": "9780061120084", "title": "To Kill a Mockingbird", "author": "Harper Lee", "genre": "Fiction", "price": 14.99, "stock": 31 },
+  { "isbn": "9780679720201", "title": "The Stranger", "author": "Albert Camus", "genre": "Fiction", "price": 11.99, "stock": 18 },
+  { "isbn": "9780385490818", "title": "The Handmaid's Tale", "author": "Margaret Atwood", "genre": "Fiction", "price": 15.99, "stock": 25 },
+  { "isbn": "9780062316110", "title": "Sapiens", "author": "Yuval Noah Harari", "genre": "Non-fiction", "price": 18.99, "stock": 55 },
+  { "isbn": "9781491950357", "title": "Fluent Python", "author": "Luciano Ramalho", "genre": "Technology", "price": 59.99, "stock": 12 },
+  { "isbn": "9780201633610", "title": "Design Patterns", "author": "Gang of Four", "genre": "Technology", "price": 54.99, "stock": 8 },
+  { "isbn": "9780132350884", "title": "Clean Code", "author": "Robert C. Martin", "genre": "Technology", "price": 44.99, "stock": 20 },
+  { "isbn": "9780316769174", "title": "The Catcher in the Rye", "author": "J.D. Salinger", "genre": "Fiction", "price": 13.99, "stock": 15 },
+  { "isbn": "9780062457714", "title": "Homo Deus", "author": "Yuval Noah Harari", "genre": "Non-fiction", "price": 17.99, "stock": 33 }
+]

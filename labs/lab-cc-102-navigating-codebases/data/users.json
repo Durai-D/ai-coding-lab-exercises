@@ -1,0 +1,18 @@
+[
+  {
+    "id": "usr_001",
+    "displayName": "Alice Dev",
+    "email": "alice@example.com",
+    "secret": "secret-alice-123",
+    "passwordHash": "hashed_not_real",
+    "wishlist": ["9780062316110", "9781491950357"]
+  },
+  {
+    "id": "usr_002",
+    "displayName": "Bob Coder",
+    "email": "bob@example.com",
+    "secret": "secret-bob-456",
+    "passwordHash": "hashed_not_real",
+    "wishlist": ["9780132350884"]
+  }
+]

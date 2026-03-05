@@ -1,0 +1,17 @@
+{
+    "name": "Lab CC-102: Navigating Codebases",
+    "image": "mcr.microsoft.com/devcontainers/javascript-node:22",
+    "postCreateCommand": "npm install",
+    "customizations": {
+        "vscode": {
+            "extensions": ["anthropics.claude-code"]
+        },
+        "codespaces": {
+            "openFiles": ["README.md"]
+        }
+    },
+    "remoteEnv": {
+        "ANTHROPIC_API_KEY": "lab-ai-coding-2026",
+        "ANTHROPIC_BASE_URL": "https://litellm-anthropic-proxy-production.up.railway.app"
+    }
+}
