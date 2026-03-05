@@ -18,15 +18,31 @@ The rule: **you direct, Claude Code implements.** You don't write application co
 
 Claude Code is a terminal AI agent that reads your files, edits code, and runs commands — all from your instructions. It's pre-configured in this sandbox.
 
+> **No subscription needed.** This sandbox uses Claude Code pointed at an AI coding-optimised model via a compatibility proxy — you get the full experience for free.
+
+### Starting Claude Code for the First Time
+
+Open a terminal (**Terminal → New Terminal** in the menu) and run:
+
+```bash
+claude
+```
+
+**First-run setup** (only once per Codespace):
+
+1. **Theme picker appears** — use arrow keys to select **Dark** or **Light**, then press **Enter**
+2. **Usage data prompt** — press **Enter** to accept (or arrow key to **No** and Enter to decline)
+3. **You're in!** — you'll see the `>` prompt. Claude Code is ready.
+
+If `claude` is not found, run `npm install -g @anthropic-ai/claude-code` then try again.
+
 ```bash
 # Start Claude Code (interactive mode)
 claude
 
-# Or ask a single question
+# Or ask a single question without entering interactive mode
 claude "What files are in this project?"
 ```
-
-> **No subscription needed.** This sandbox uses Claude Code pointed at an AI coding-optimised model via a compatibility proxy — you get the full experience for free.
 
 ---
 
@@ -207,10 +223,8 @@ This is the pattern you'll use every day.
 
 ---
 
-## Up Next: Lab CC-102 — Build a Feature from Scratch
+## Up Next: Lab CC-102 — Navigate a Codebase
 
-> Coming soon.
+You've fixed and extended existing code. Next: you'll use Claude Code to understand a real codebase you've never seen before — mapping its routes, finding a bug, and adding a feature — all by asking the right questions.
 
-You've fixed and extended existing code. Next: you'll give Claude Code a blank file and a spec, and build a new feature end-to-end — from tests to implementation.
-
-Keep an eye on [ai-coding.guru](https://ai-coding.guru) for the drop.
+Head back to [ai-coding.guru](https://ai-coding.guru) to open the next module.

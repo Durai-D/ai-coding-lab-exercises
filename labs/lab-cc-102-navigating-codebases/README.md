@@ -17,6 +17,24 @@ You're looking at **Bookshop API** — a small Express REST API for a bookshop. 
 
 ---
 
+## Start Claude Code
+
+Open a terminal (**Terminal → New Terminal** in the menu) and run:
+
+```bash
+claude
+```
+
+**First-run setup** (only if the wizard appears — once per Codespace):
+
+1. **Theme picker** — use arrow keys to choose **Dark** or **Light**, then press **Enter**
+2. **Usage data prompt** — press **Enter** to accept (or arrow key to **No**, then Enter)
+3. **You're in!** — the `>` prompt appears. Claude Code is ready.
+
+> If `claude` is not found, run `npm install -g @anthropic-ai/claude-code` and try again.
+
+---
+
 ## Setup
 
 ```bash

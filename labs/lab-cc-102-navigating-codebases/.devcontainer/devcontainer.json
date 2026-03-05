@@ -1,17 +1,35 @@
 {
-    "name": "Lab CC-102: Navigating Codebases",
-    "image": "mcr.microsoft.com/devcontainers/javascript-node:22",
-    "postCreateCommand": "npm install",
-    "customizations": {
-        "vscode": {
-            "extensions": ["anthropics.claude-code"]
-        },
-        "codespaces": {
-            "openFiles": ["README.md"]
-        }
+  "name": "Lab CC-102: Navigating Codebases",
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:22",
+
+  "postCreateCommand": "npm install && npm install -g @anthropic-ai/claude-code && echo 'export ANTHROPIC_API_KEY=lab-ai-coding-2026' >> ~/.bashrc && echo 'export ANTHROPIC_BASE_URL=https://litellm-anthropic-proxy-production.up.railway.app' >> ~/.bashrc && echo '{\"hasCompletedOnboarding\":true,\"numStartups\":3,\"installMethod\":\"global\",\"oauthAccount\":null,\"primaryApiKey\":\"lab-ai-coding-2026\"}' > ~/.claude.json && code --install-extension anthropic.claude-code --force && code --install-extension RooVeterinaryInc.roo-cline --force",
+
+  // Claude Code is pre-configured to use the AI Coding Lab proxy.
+  // Students get full Claude Code functionality — no Anthropic subscription needed.
+  "remoteEnv": {
+    "ANTHROPIC_BASE_URL": "https://litellm-anthropic-proxy-production.up.railway.app",
+    "ANTHROPIC_API_KEY": "lab-ai-coding-2026"
+  },
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "anthropic.claude-code",
+        "RooVeterinaryInc.roo-cline",
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode"
+      ],
+      "settings": {
+        "terminal.integrated.defaultProfile.linux": "bash",
+        "roo-cline.apiProvider": "anthropic",
+        "roo-cline.apiModelId": "claude-sonnet-4-6",
+        "roo-cline.anthropicBaseUrl": "https://litellm-anthropic-proxy-production.up.railway.app"
+      }
     },
-    "remoteEnv": {
-        "ANTHROPIC_API_KEY": "lab-ai-coding-2026",
-        "ANTHROPIC_BASE_URL": "https://litellm-anthropic-proxy-production.up.railway.app"
+    "codespaces": {
+      "openFiles": ["labs/lab-cc-102-navigating-codebases/README.md"]
     }
+  },
+
+  "forwardPorts": [3000]
 }
