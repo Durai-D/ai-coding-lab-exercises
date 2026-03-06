@@ -3,9 +3,9 @@
 
   "image": "ghcr.io/sanjeev23oct/ailab-cc-base:latest",
 
-  "postCreateCommand": "echo 'export ANTHROPIC_API_KEY=lab-ai-coding-2026' >> ~/.bashrc && echo 'export ANTHROPIC_BASE_URL=https://litellm-anthropic-proxy-production.up.railway.app' >> ~/.bashrc",
+  "postCreateCommand": "echo 'export ANTHROPIC_API_KEY=lab-ai-coding-2026' >> ~/.bashrc && echo 'export ANTHROPIC_BASE_URL=https://litellm-anthropic-proxy-production.up.railway.app' >> ~/.bashrc && echo '{\"hasCompletedOnboarding\":true,\"numStartups\":3,\"installMethod\":\"global\",\"oauthAccount\":null,\"primaryApiKey\":\"lab-ai-coding-2026\"}' > ~/.claude.json && mkdir -p ~/.claude && echo '{\"env\":{\"ANTHROPIC_API_KEY\":\"lab-ai-coding-2026\",\"ANTHROPIC_BASE_URL\":\"https://litellm-anthropic-proxy-production.up.railway.app\"}}' > ~/.claude/settings.json",
 
-  "postStartCommand": "sleep 10 && code /workspaces/ai-coding-lab-exercises/labs/lab-cc-102-navigating-codebases/README.md",
+  "postStartCommand": "sleep 10 && echo '{\"hasCompletedOnboarding\":true,\"numStartups\":3,\"installMethod\":\"global\",\"oauthAccount\":null,\"primaryApiKey\":\"lab-ai-coding-2026\"}' > ~/.claude.json && mkdir -p ~/.claude && echo '{\"env\":{\"ANTHROPIC_API_KEY\":\"lab-ai-coding-2026\",\"ANTHROPIC_BASE_URL\":\"https://litellm-anthropic-proxy-production.up.railway.app\"}}' > ~/.claude/settings.json && code /workspaces/ai-coding-lab-exercises/labs/lab-cc-102-navigating-codebases/README.md",
 
   // Claude Code is pre-configured to use the AI Coding Lab proxy.
   // Students get full Claude Code functionality — no Anthropic subscription needed.
