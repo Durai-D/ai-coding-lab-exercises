@@ -37,10 +37,17 @@ GitHub Codespaces for CC labs take 3+ minutes to start. Students wait too long b
 
 ---
 
-### Attempt 5 — `postStartCommand` for README opening ✅ FIXES README
-**What**: Added `"postStartCommand": "code labs/lab-cc-XXX/README.md"` to all 5 devcontainer.json.
-**Result**: Lab-specific README opens on every Codespace start (not just initial creation). `codespaces.openFiles` only fires on initial creation; `postStartCommand` runs on every start.
-**Status**: ✅ In place.
+### Attempt 5 — `postStartCommand` for README opening ❌ UNRELIABLE
+**What**: Added `"postStartCommand": "code labs/lab-cc-XXX/README.md"` to all 5 devcontainer.json. Later iterated: added `sleep 10`, switched to absolute path `/workspaces/ai-coding-lab-exercises/labs/...`, tried semicolon separator.
+**Why it kept failing**: `postStartCommand` runs BEFORE VS Code/the editor attaches to the container. The `code` CLI requires the VS Code client to be connected — calling it during `postStartCommand` is a race condition. `sleep 10` is not reliable; VS Code can take longer to attach depending on extension loading time.
+**Status**: ❌ Removed `code` command from `postStartCommand`.
+
+---
+
+### Attempt 6 — `postAttachCommand` for README opening ✅ IN PROGRESS
+**What**: Moved `"postAttachCommand": "code /workspaces/ai-coding-lab-exercises/labs/lab-cc-XXX/README.md"` to all 5 devcontainer.json. `postAttachCommand` is a devcontainer lifecycle hook that runs AFTER the editor (VS Code) attaches — the `code` CLI is guaranteed to be available.
+**Also fixed**: Root `.devcontainer/devcontainer.json` switched from `"build":` → `"image":`, removed `npm install -g @anthropic-ai/claude-code` and `code --install-extension` (both are known failure sources for `postCreateCommand`).
+**Status**: ✅ Deployed. To be verified with a fresh Codespace.
 
 ---
 
