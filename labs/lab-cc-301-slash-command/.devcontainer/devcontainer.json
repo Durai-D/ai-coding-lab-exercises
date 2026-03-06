@@ -2,7 +2,7 @@
   "name": "Lab CC-301: Build Custom Slash Commands",
 
   "build": {
-    "dockerfile": "Dockerfile",
+    "dockerfile": "../../Dockerfile",
     "context": "../../"
   },
 

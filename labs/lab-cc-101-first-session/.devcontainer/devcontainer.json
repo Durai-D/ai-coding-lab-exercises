@@ -2,7 +2,7 @@
   "name": "Lab CC-101: Claude Code First Session",
 
   "build": {
-    "dockerfile": "Dockerfile",
+    "dockerfile": "../../Dockerfile",
     "context": "../../"
   },
 

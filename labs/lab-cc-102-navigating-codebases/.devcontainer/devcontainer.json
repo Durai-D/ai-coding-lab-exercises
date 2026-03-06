@@ -2,7 +2,7 @@
   "name": "Lab CC-102: Navigating Codebases",
 
   "build": {
-    "dockerfile": "Dockerfile",
+    "dockerfile": "../../Dockerfile",
     "context": "../../"
   },
 

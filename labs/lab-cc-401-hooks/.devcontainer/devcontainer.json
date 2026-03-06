@@ -2,7 +2,7 @@
   "name": "Lab CC-401: Hooks Quality Gate",
 
   "build": {
-    "dockerfile": "Dockerfile",
+    "dockerfile": "../../Dockerfile",
     "context": "../../"
   },
 

@@ -2,7 +2,7 @@
   "name": "Lab CC-201: Write Your First CLAUDE.md",
 
   "build": {
-    "dockerfile": "Dockerfile",
+    "dockerfile": "../../Dockerfile",
     "context": "../../"
   },
 
