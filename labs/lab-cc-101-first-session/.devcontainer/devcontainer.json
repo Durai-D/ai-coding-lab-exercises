@@ -1,8 +1,12 @@
 {
   "name": "Lab CC-101: Claude Code First Session",
-  "image": "mcr.microsoft.com/devcontainers/javascript-node:22",
 
-  "postCreateCommand": "npm install && npm install -g @anthropic-ai/claude-code && echo 'export ANTHROPIC_API_KEY=lab-ai-coding-2026' >> ~/.bashrc && echo 'export ANTHROPIC_BASE_URL=https://litellm-anthropic-proxy-production.up.railway.app' >> ~/.bashrc && echo '{\"hasCompletedOnboarding\":true,\"numStartups\":3,\"installMethod\":\"global\",\"oauthAccount\":null,\"primaryApiKey\":\"lab-ai-coding-2026\"}' > ~/.claude.json",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "context": "../../"
+  },
+
+  "postCreateCommand": "npm install && echo 'export ANTHROPIC_API_KEY=lab-ai-coding-2026' >> ~/.bashrc && echo 'export ANTHROPIC_BASE_URL=https://litellm-anthropic-proxy-production.up.railway.app' >> ~/.bashrc && echo '{\"hasCompletedOnboarding\":true,\"numStartups\":3,\"installMethod\":\"global\"}' > ~/.claude.json",
 
   // Claude Code is pre-configured to use the AI Coding Lab proxy.
   // Students get full Claude Code functionality — no Anthropic subscription needed.
@@ -21,6 +25,7 @@
       ],
       "settings": {
         "terminal.integrated.defaultProfile.linux": "bash",
+        "claudeCode.disableLoginPrompt": true,
         "roo-cline.apiProvider": "anthropic",
         "roo-cline.apiModelId": "claude-sonnet-4-6",
         "roo-cline.anthropicBaseUrl": "https://litellm-anthropic-proxy-production.up.railway.app"
