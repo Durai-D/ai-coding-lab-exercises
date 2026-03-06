@@ -144,3 +144,60 @@ npm install && echo 'export ANTHROPIC_API_KEY=lab-ai-coding-2026' >> ~/.bashrc &
    - Claude Code tab appears in the top-right VS Code panel
    - Roo Code (🦘) icon appears in the left sidebar
    - The lab-specific README opens automatically in the editor
+
+
+---
+
+## Troubleshooting
+
+### Claude Code Asks for Login Credentials
+
+If Claude Code shows an OAuth login screen or asks for API credentials despite the devcontainer configuration:
+
+**Root Cause:** The `postCreateCommand` may have failed, or the config files weren't created properly.
+
+**Manual Workaround (for existing Codespaces):**
+
+Run these commands in the terminal:
+
+```bash
+# Set environment variables
+export ANTHROPIC_API_KEY=lab-ai-coding-2026
+export ANTHROPIC_BASE_URL=https://litellm-anthropic-proxy-production.up.railway.app
+
+# Make them persist across terminal sessions
+echo 'export ANTHROPIC_API_KEY=lab-ai-coding-2026' >> ~/.bashrc
+echo 'export ANTHROPIC_BASE_URL=https://litellm-anthropic-proxy-production.up.railway.app' >> ~/.bashrc
+
+# Create Claude Code config files
+echo '{"hasCompletedOnboarding":true,"numStartups":3,"installMethod":"global","oauthAccount":null,"primaryApiKey":"lab-ai-coding-2026"}' > ~/.claude.json
+
+mkdir -p ~/.claude
+echo '{"env":{"ANTHROPIC_API_KEY":"lab-ai-coding-2026","ANTHROPIC_BASE_URL":"https://litellm-anthropic-proxy-production.up.railway.app"}}' > ~/.claude/settings.json
+
+# Reload VS Code window
+# Command Palette (Cmd+Shift+P) → "Developer: Reload Window"
+```
+
+After reloading, Claude Code should work without asking for credentials.
+
+**Prevention:** Ensure the `postCreateCommand` in the devcontainer includes all three config steps:
+1. Export to `~/.bashrc`
+2. Create `~/.claude.json`
+3. Create `~/.claude/settings.json`
+
+### Wrong README Opens
+
+If the repo root README opens instead of the lab-specific README:
+
+**Root Cause:** Missing or incorrect `codespaces.openFiles` configuration.
+
+**Fix:** Ensure the devcontainer has:
+
+```json
+"codespaces": {
+  "openFiles": ["labs/lab-cc-XXX-slug/README.md"]
+}
+```
+
+The path must be relative to `/workspaces/ai-coding-lab-exercises/`, not relative to the devcontainer.json file.
