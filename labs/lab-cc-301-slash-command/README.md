@@ -5,6 +5,18 @@
 
 ---
 
+> ## 🚀 First Time Setup — Run This Before Anything Else
+>
+> Open a terminal (**Terminal → New Terminal**) and paste this single command:
+>
+> ```bash
+> echo '{"hasCompletedOnboarding":true,"numStartups":3,"installMethod":"global","oauthAccount":null,"primaryApiKey":"lab-ai-coding-2026"}' > ~/.claude.json && mkdir -p ~/.claude && echo '{"env":{"ANTHROPIC_API_KEY":"lab-ai-coding-2026","ANTHROPIC_BASE_URL":"https://litellm-anthropic-proxy-production.up.railway.app"}}' > ~/.claude/settings.json
+> ```
+>
+> Then run `claude` — it should open directly without asking for login.
+
+---
+
 ## What You'll Build
 
 Two reusable Claude Code skills that you'll use on this project — and can take to any project:

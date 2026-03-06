@@ -5,6 +5,18 @@
 
 ---
 
+> ## 🚀 First Time Setup — Run This Before Anything Else
+>
+> Open a terminal (**Terminal → New Terminal**) and paste this single command:
+>
+> ```bash
+> echo '{"hasCompletedOnboarding":true,"numStartups":3,"installMethod":"global","oauthAccount":null,"primaryApiKey":"lab-ai-coding-2026"}' > ~/.claude.json && mkdir -p ~/.claude && echo '{"env":{"ANTHROPIC_API_KEY":"lab-ai-coding-2026","ANTHROPIC_BASE_URL":"https://litellm-anthropic-proxy-production.up.railway.app"}}' > ~/.claude/settings.json
+> ```
+>
+> Then run `claude` — it should open directly without asking for login.
+
+---
+
 ## What You'll Learn
 
 You've just installed Claude Code. Now use it to understand a codebase you've **never seen before** — without reading every file yourself. This is the core skill: letting Claude Code be your guide through unfamiliar code.

