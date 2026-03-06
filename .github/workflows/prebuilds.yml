@@ -1,0 +1,53 @@
+name: "Codespaces Prebuilds"
+
+# Rebuild dev container images when devcontainer configs or lab deps change.
+# Pre-built images are cached to ghcr.io and reused by GitHub Codespaces,
+# reducing startup time from ~2 min to ~20-30 seconds.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "labs/**/.devcontainer/**"
+      - "labs/**/package.json"
+      - "labs/**/package-lock.json"
+  schedule:
+    # Rebuild weekly on Sunday at 3am UTC to keep images fresh
+    - cron: "0 3 * * 0"
+  workflow_dispatch:
+
+jobs:
+  prebuild:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - lab: lab-cc-101-first-session
+          - lab: lab-cc-102-navigating-codebases
+          - lab: lab-cc-201-claude-md
+          - lab: lab-cc-301-slash-command
+          - lab: lab-cc-401-hooks
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Pre-build dev container — ${{ matrix.lab }}
+        uses: devcontainers/ci@v0.3
+        with:
+          imageName: ghcr.io/${{ github.repository_owner }}/ailab-${{ matrix.lab }}
+          configFile: labs/${{ matrix.lab }}/.devcontainer/devcontainer.json
+          cacheFrom: ghcr.io/${{ github.repository_owner }}/ailab-${{ matrix.lab }}
+          push: always
