@@ -1,38 +1,26 @@
-name: "Codespaces Prebuilds"
+name: "Build Dev Container Base Image"
 
-# Rebuild dev container images when devcontainer configs or lab deps change.
-# Pre-built images are cached to ghcr.io and reused by GitHub Codespaces,
-# reducing startup time from ~2 min to ~20-30 seconds.
+# Builds the shared base image (Node 22 + Claude Code pre-installed) and pushes
+# to ghcr.io. All CC lab devcontainers reference this image directly via
+# "image: ghcr.io/OWNER/ailab-cc-base:latest", so Codespace creation pulls the
+# cached image (~15-30s) instead of running npm install at runtime (~2-3 min).
 
 on:
   push:
     branches: [main]
     paths:
-      - "labs/**/.devcontainer/**"
       - "labs/Dockerfile"
-      - "labs/**/package.json"
-      - "labs/**/package-lock.json"
   schedule:
-    # Rebuild weekly on Sunday at 3am UTC to keep images fresh
+    # Rebuild weekly on Sunday at 3am UTC to pick up upstream base image updates
     - cron: "0 3 * * 0"
   workflow_dispatch:
 
 jobs:
-  prebuild:
+  build:
     runs-on: ubuntu-latest
     permissions:
       contents: read
       packages: write
-
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - lab: lab-cc-101-first-session
-          - lab: lab-cc-102-navigating-codebases
-          - lab: lab-cc-201-claude-md
-          - lab: lab-cc-301-slash-command
-          - lab: lab-cc-401-hooks
 
     steps:
       - name: Checkout
@@ -45,10 +33,15 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Pre-build dev container — ${{ matrix.lab }}
-        uses: devcontainers/ci@v0.3
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build and push base image
+        uses: docker/build-push-action@v5
         with:
-          imageName: ghcr.io/${{ github.repository_owner }}/ailab-${{ matrix.lab }}
-          configFile: labs/${{ matrix.lab }}/.devcontainer/devcontainer.json
-          cacheFrom: ghcr.io/${{ github.repository_owner }}/ailab-${{ matrix.lab }}
-          push: always
+          context: labs/
+          file: labs/Dockerfile
+          push: true
+          tags: ghcr.io/${{ github.repository_owner }}/ailab-cc-base:latest
+          cache-from: type=registry,ref=ghcr.io/${{ github.repository_owner }}/ailab-cc-base:buildcache
+          cache-to: type=registry,ref=ghcr.io/${{ github.repository_owner }}/ailab-cc-base:buildcache,mode=max

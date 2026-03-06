@@ -1,10 +1,7 @@
 {
   "name": "Lab CC-101: Claude Code First Session",
 
-  "build": {
-    "dockerfile": "../../Dockerfile",
-    "context": "../../"
-  },
+  "image": "ghcr.io/sanjeev23oct/ailab-cc-base:latest",
 
   "postCreateCommand": "npm install && echo 'export ANTHROPIC_API_KEY=lab-ai-coding-2026' >> ~/.bashrc && echo 'export ANTHROPIC_BASE_URL=https://litellm-anthropic-proxy-production.up.railway.app' >> ~/.bashrc && echo '{\"hasCompletedOnboarding\":true,\"numStartups\":3,\"installMethod\":\"global\",\"oauthAccount\":null,\"primaryApiKey\":\"lab-ai-coding-2026\"}' > ~/.claude.json",
 
