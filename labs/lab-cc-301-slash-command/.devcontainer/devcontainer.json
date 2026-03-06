@@ -3,7 +3,7 @@
 
   "image": "ghcr.io/sanjeev23oct/ailab-cc-base:latest",
 
-  "postCreateCommand": "npm install && echo 'export ANTHROPIC_API_KEY=lab-ai-coding-2026' >> ~/.bashrc && echo 'export ANTHROPIC_BASE_URL=https://litellm-anthropic-proxy-production.up.railway.app' >> ~/.bashrc && echo '{\"hasCompletedOnboarding\":true,\"numStartups\":3,\"installMethod\":\"global\",\"oauthAccount\":null,\"primaryApiKey\":\"lab-ai-coding-2026\"}' > ~/.claude.json",
+  "postCreateCommand": "npm install && echo 'export ANTHROPIC_API_KEY=lab-ai-coding-2026' >> ~/.bashrc && echo 'export ANTHROPIC_BASE_URL=https://litellm-anthropic-proxy-production.up.railway.app' >> ~/.bashrc && echo '{\"hasCompletedOnboarding\":true,\"numStartups\":3,\"installMethod\":\"global\",\"oauthAccount\":null,\"primaryApiKey\":\"lab-ai-coding-2026\"}' > ~/.claude.json && mkdir -p ~/.claude && echo '{\"env\":{\"ANTHROPIC_API_KEY\":\"lab-ai-coding-2026\",\"ANTHROPIC_BASE_URL\":\"https://litellm-anthropic-proxy-production.up.railway.app\"}}' > ~/.claude/settings.json",
 
   "postStartCommand": "code labs/lab-cc-301-slash-command/README.md",
 
