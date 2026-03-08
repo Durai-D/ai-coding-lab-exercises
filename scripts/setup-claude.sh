@@ -7,7 +7,7 @@
 
 set -e
 
-API_URL="https://aicodinglab.com/api"
+API_URL="https://ai-coding.guru/api"
 PROXY_URL="https://litellm-anthropic-proxy-production.up.railway.app"
 
 if [ -z "$LAB_TOKEN" ]; then
@@ -16,8 +16,8 @@ if [ -z "$LAB_TOKEN" ]; then
   echo "║  ⚠️  LAB_TOKEN not set — Claude Code won't work yet      ║"
   echo "║                                                          ║"
   echo "║  Quick fix (one-time setup):                             ║"
-  echo "║  1. Go to aicodinglab.com → Dashboard                   ║"
-  echo "║  2. Copy your Lab Token from the AI Credits widget       ║"
+  echo "║  1. Go to ai-coding.guru/settings → API Keys            ║"
+  echo "║  2. Copy your Lab Token                                  ║"
   echo "║  3. Add it at github.com/settings/codespaces             ║"
   echo "║     Secret name: LAB_TOKEN                               ║"
   echo "║  4. Rebuild this Codespace — you're done for all labs    ║"
@@ -41,7 +41,7 @@ fi
 VIRTUAL_KEY=$(echo "$RESPONSE" | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('data',{}).get('key',''))" 2>/dev/null || echo "")
 
 if [ -z "$VIRTUAL_KEY" ]; then
-  echo "⚠️  Could not get virtual key. Your LAB_TOKEN may be invalid — copy a fresh one from the dashboard."
+  echo "⚠️  Could not get virtual key. Your LAB_TOKEN may be invalid — copy a fresh one from ai-coding.guru/settings → API Keys."
   exit 0
 fi
 

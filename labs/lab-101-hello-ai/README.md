@@ -15,6 +15,8 @@ Claude Code is pre-installed in this Codespace and configured automatically via 
 
 **Already set up?** You're good — just run `claude` in the terminal to verify.
 
+**Claude asking for login?** Re-run setup manually: `bash /workspaces/ai-coding-lab-exercises/scripts/setup-claude.sh`
+
 > No Anthropic subscription needed. Your personal token gives you ~500k tokens included with your account.
 
 ---

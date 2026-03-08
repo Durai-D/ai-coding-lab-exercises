@@ -15,6 +15,8 @@
 > 3. Rebuild this Codespace — Claude Code will be ready automatically for every lab
 >
 > **Already set up?** Just run `claude` — no login needed.
+>
+> **Claude asking for login?** Re-run setup manually: `bash /workspaces/ai-coding-lab-exercises/scripts/setup-claude.sh`
 
 ---
 
