@@ -4,11 +4,38 @@ Reference for anyone adding or maintaining lab devcontainers in this repo.
 
 ---
 
-## Template
+## API Key Security Model
 
-Copy from `labs/lab-cc-101-first-session/.devcontainer/devcontainer.json` when creating a new lab.
+**The API key (`ANTHROPIC_API_KEY`) is NEVER stored in code or devcontainer files.**
 
-> **Base image:** All CC labs use `labs/Dockerfile` (builds on `javascript-node:22` with Claude Code pre-installed). Do NOT use `"image"` directly — use `"build": { "dockerfile": "Dockerfile", "context": "../../" }` so GitHub Actions prebuilds can cache the image layer.
+It is stored as a **GitHub Codespace repository secret** and automatically injected into every Codespace at runtime.
+
+### One-time setup (repo admin only)
+1. Go to: **github.com/sanjeev23oct/ai-coding-lab-exercises → Settings → Secrets and variables → Codespaces → New repository secret**
+2. Name: `ANTHROPIC_API_KEY` · Value: the current LiteLLM proxy key
+
+GitHub injects this as an environment variable into every Codespace — students never see it.
+
+### How the key reaches Claude Code
+The `postStartCommand` in each devcontainer runs on every Codespace start and writes the key into Claude Code's config using `$ANTHROPIC_API_KEY` from the environment:
+
+```bash
+printf '{"hasCompletedOnboarding":true,"numStartups":3,"installMethod":"global","oauthAccount":null,"primaryApiKey":"%s"}' "$ANTHROPIC_API_KEY" > ~/.claude.json && \
+mkdir -p ~/.claude && \
+printf '{"env":{"ANTHROPIC_API_KEY":"%s","ANTHROPIC_BASE_URL":"https://litellm-anthropic-proxy-production.up.railway.app"}}' "$ANTHROPIC_API_KEY" > ~/.claude/settings.json
+```
+
+To rotate the key: update Railway env var + update the GitHub repo secret. No code changes needed.
+
+---
+
+## Canonical Path Rule
+
+GitHub Codespaces **only** discovers devcontainers at:
+```
+.devcontainer/<lab-name>/devcontainer.json
+```
+Files at `labs/<name>/.devcontainer/` are **invisible** to Codespaces. Always use the canonical path.
 
 ---
 
@@ -16,7 +43,39 @@ Copy from `labs/lab-cc-101-first-session/.devcontainer/devcontainer.json` when c
 
 Every CC lab devcontainer must have **all** of the following:
 
-### 1. `extensions` — both must be present
+### 1. `image` — use the pre-built image, never `build`
+```json
+"image": "ghcr.io/sanjeev23oct/ailab-cc-base:latest"
+```
+> Do NOT use `"build": { "dockerfile": ... }` — it rebuilds from scratch on every Codespace creation (2-3 min penalty). The pre-built image has Claude Code pre-installed.
+
+### 2. `postStartCommand` — writes Claude Code config at runtime using env var
+```json
+"postStartCommand": "printf '{\"hasCompletedOnboarding\":true,\"numStartups\":3,\"installMethod\":\"global\",\"oauthAccount\":null,\"primaryApiKey\":\"%s\"}' \"$ANTHROPIC_API_KEY\" > ~/.claude.json && mkdir -p ~/.claude && printf '{\"env\":{\"ANTHROPIC_API_KEY\":\"%s\",\"ANTHROPIC_BASE_URL\":\"https://litellm-anthropic-proxy-production.up.railway.app\"}}' \"$ANTHROPIC_API_KEY\" > ~/.claude/settings.json"
+```
+> Uses `printf` + `%s` + `"$ANTHROPIC_API_KEY"` so the key expands from the Codespace secret at runtime. Never hardcode the key here.
+
+### 3. `postCreateCommand` — sets ANTHROPIC_BASE_URL for interactive shells
+```json
+"postCreateCommand": "echo 'export ANTHROPIC_BASE_URL=https://litellm-anthropic-proxy-production.up.railway.app' >> ~/.bashrc"
+```
+> `ANTHROPIC_API_KEY` is NOT exported to `.bashrc` — it comes from the Codespace secret.
+
+### 4. `postAttachCommand` — opens the lab README when VS Code connects
+```json
+"postAttachCommand": "code /workspaces/ai-coding-lab-exercises/labs/<lab-name>/README.md"
+```
+> Must be `postAttachCommand` (not `postStartCommand`). VS Code client is not attached during `postStartCommand`, so `code <file>` silently does nothing there.
+
+### 5. `remoteEnv` — only ANTHROPIC_BASE_URL (key comes from secret)
+```json
+"remoteEnv": {
+  "ANTHROPIC_BASE_URL": "https://litellm-anthropic-proxy-production.up.railway.app"
+}
+```
+> `ANTHROPIC_API_KEY` is intentionally absent — it is injected by GitHub from the repo secret.
+
+### 6. `extensions`
 ```json
 "extensions": [
   "anthropic.claude-code",
@@ -25,48 +84,29 @@ Every CC lab devcontainer must have **all** of the following:
   "esbenp.prettier-vscode"
 ]
 ```
-> Extension IDs are case-sensitive. `anthropic.claude-code` (not `anthropics.claude-code`).
 
-### 2. `settings` — Roo Code must point to the lab proxy; disable Claude Code login prompt
+### 7. `settings`
 ```json
 "settings": {
   "terminal.integrated.defaultProfile.linux": "bash",
   "claudeCode.disableLoginPrompt": true,
   "roo-cline.apiProvider": "anthropic",
   "roo-cline.apiModelId": "claude-sonnet-4-6",
-  "roo-cline.anthropicBaseUrl": "https://litellm-anthropic-proxy-production.up.railway.app"
-}
-```
-> `claudeCode.disableLoginPrompt: true` prevents the Claude Code VS Code extension from showing an OAuth login screen. Auth uses `ANTHROPIC_API_KEY` from `remoteEnv` instead.
-
-### 3. `postCreateCommand` — sets env vars and skips onboarding wizard
-```bash
-npm install && echo 'export ANTHROPIC_API_KEY=lab-ai-coding-2030' >> ~/.bashrc && echo 'export ANTHROPIC_BASE_URL=https://litellm-anthropic-proxy-production.up.railway.app' >> ~/.bashrc && echo '{"hasCompletedOnboarding":true,"numStartups":3,"installMethod":"global","oauthAccount":null,"primaryApiKey":"lab-ai-coding-2030"}' > ~/.claude.json
-```
-
-> **Do NOT** add `npm install -g @anthropic-ai/claude-code` here. Claude Code is pre-baked into `labs/Dockerfile` — installing it at runtime costs 2-3 minutes on every Codespace creation.
-> **Do NOT** add `code --install-extension` here. The VS Code server isn't ready during `postCreateCommand`, and the command will fail (red X in the terminal). Extensions are handled by `customizations.vscode.extensions`.
-
-### 4. `remoteEnv` — injects env vars into the shell
-```json
-"remoteEnv": {
-  "ANTHROPIC_BASE_URL": "https://litellm-anthropic-proxy-production.up.railway.app",
-  "ANTHROPIC_API_KEY": "lab-ai-coding-2030"
+  "roo-cline.anthropicBaseUrl": "https://litellm-anthropic-proxy-production.up.railway.app",
+  "workbench.editorAssociations": {
+    "**/README.md": "vscode.markdown.preview.editor"
+  }
 }
 ```
 
-### 5. `openFiles` — must be a full workspace-relative path
+### 8. `openFiles` — full workspace-relative path
 ```json
 "codespaces": {
   "openFiles": ["labs/lab-cc-XXX-slug/README.md"]
 }
 ```
-> The workspace root in a Codespace is `/workspaces/ai-coding-lab-exercises/`. The path in `openFiles` is relative to that root — **not** relative to the devcontainer.json file.
->
-> ✅ Correct: `"labs/lab-cc-102-navigating-codebases/README.md"`
-> ❌ Wrong: `"README.md"` (opens the repo root README)
 
-### 6. `forwardPorts`
+### 9. `forwardPorts`
 ```json
 "forwardPorts": [3000]
 ```
@@ -77,18 +117,18 @@ npm install && echo 'export ANTHROPIC_API_KEY=lab-ai-coding-2030' >> ~/.bashrc &
 
 ```json
 {
-  "name": "Lab CC-102: Navigating Codebases",
+  "name": "Lab CC-101: Claude Code First Session",
 
-  "build": {
-    "dockerfile": "Dockerfile",
-    "context": "../../"
-  },
+  "image": "ghcr.io/sanjeev23oct/ailab-cc-base:latest",
 
-  "postCreateCommand": "npm install && echo 'export ANTHROPIC_API_KEY=lab-ai-coding-2030' >> ~/.bashrc && echo 'export ANTHROPIC_BASE_URL=https://litellm-anthropic-proxy-production.up.railway.app' >> ~/.bashrc && echo '{\"hasCompletedOnboarding\":true,\"numStartups\":3,\"installMethod\":\"global\",\"oauthAccount\":null,\"primaryApiKey\":\"lab-ai-coding-2030\"}' > ~/.claude.json",
+  "postCreateCommand": "echo 'export ANTHROPIC_BASE_URL=https://litellm-anthropic-proxy-production.up.railway.app' >> ~/.bashrc",
+
+  "postStartCommand": "printf '{\"hasCompletedOnboarding\":true,\"numStartups\":3,\"installMethod\":\"global\",\"oauthAccount\":null,\"primaryApiKey\":\"%s\"}' \"$ANTHROPIC_API_KEY\" > ~/.claude.json && mkdir -p ~/.claude && printf '{\"env\":{\"ANTHROPIC_API_KEY\":\"%s\",\"ANTHROPIC_BASE_URL\":\"https://litellm-anthropic-proxy-production.up.railway.app\"}}' \"$ANTHROPIC_API_KEY\" > ~/.claude/settings.json",
+
+  "postAttachCommand": "code /workspaces/ai-coding-lab-exercises/labs/lab-cc-101-first-session/README.md",
 
   "remoteEnv": {
-    "ANTHROPIC_BASE_URL": "https://litellm-anthropic-proxy-production.up.railway.app",
-    "ANTHROPIC_API_KEY": "lab-ai-coding-2030"
+    "ANTHROPIC_BASE_URL": "https://litellm-anthropic-proxy-production.up.railway.app"
   },
 
   "customizations": {
@@ -104,11 +144,14 @@ npm install && echo 'export ANTHROPIC_API_KEY=lab-ai-coding-2030' >> ~/.bashrc &
         "claudeCode.disableLoginPrompt": true,
         "roo-cline.apiProvider": "anthropic",
         "roo-cline.apiModelId": "claude-sonnet-4-6",
-        "roo-cline.anthropicBaseUrl": "https://litellm-anthropic-proxy-production.up.railway.app"
+        "roo-cline.anthropicBaseUrl": "https://litellm-anthropic-proxy-production.up.railway.app",
+        "workbench.editorAssociations": {
+          "**/README.md": "vscode.markdown.preview.editor"
+        }
       }
     },
     "codespaces": {
-      "openFiles": ["labs/lab-cc-102-navigating-codebases/README.md"]
+      "openFiles": ["labs/lab-cc-101-first-session/README.md"]
     }
   },
 
@@ -122,82 +165,43 @@ npm install && echo 'export ANTHROPIC_API_KEY=lab-ai-coding-2030' >> ~/.bashrc &
 
 | Mistake | Effect | Fix |
 |---------|--------|-----|
-| `anthropics.claude-code` (extra 's') | Extension not found | Use `anthropic.claude-code` |
-| `openFiles: ["README.md"]` | Opens repo root README | Use full path: `labs/lab-cc-XXX/README.md` |
-| `code --install-extension` in postCreateCommand | Red X / postCreate fails | Remove it — extensions install via `customizations` |
-| `npm install -g @anthropic-ai/claude-code` in postCreateCommand | 2-3 min startup delay | Remove it — Claude Code is pre-baked in `labs/Dockerfile` |
-| `"image": "..."` instead of `"build": {...}` | Docker layer cache bypassed; npm install runs at runtime | Use `build: { dockerfile: "Dockerfile", context: "../../" }` |
-| Missing `remoteEnv` | `claude` has no API key | Add `ANTHROPIC_API_KEY` and `ANTHROPIC_BASE_URL` |
-| Missing `claudeCode.disableLoginPrompt: true` | VS Code shows OAuth login screen | Add to `customizations.vscode.settings` |
-| Missing Roo Code settings | Roo Code uses wrong provider | Add `roo-cline.*` settings block |
+| `"ANTHROPIC_API_KEY"` in `remoteEnv` or code | Key visible in public repo | Remove — key comes from GitHub repo secret |
+| `"build": { "dockerfile": ... }` | Rebuilds image on every Codespace (~2-3 min) | Use `"image": "ghcr.io/sanjeev23oct/ailab-cc-base:latest"` |
+| `code <file>` in `postStartCommand` | Silent failure — VS Code not attached yet | Use `postAttachCommand` for `code` commands |
+| `code --install-extension` in `postCreateCommand` | Red X / postCreate fails | Remove — extensions install via `customizations` |
+| `npm install -g @anthropic-ai/claude-code` anywhere | 2-3 min startup delay | Claude Code is pre-baked in the image |
+| `openFiles: ["README.md"]` | Opens repo root README | Use full path: `"labs/lab-cc-XXX/README.md"` |
+| Devcontainer at `labs/<name>/.devcontainer/` | Codespaces ignores it | Place at `.devcontainer/<lab-name>/devcontainer.json` |
+| Single quotes around `$ANTHROPIC_API_KEY` in postStartCommand | Key not expanded (writes literal `$ANTHROPIC_API_KEY`) | Use `printf '...' "$ANTHROPIC_API_KEY"` pattern |
 
 ---
 
 ## Testing a New Devcontainer
 
-1. Push your changes to `main`
-2. Go to GitHub → Code → Codespaces → New codespace with options
-3. Select the lab's devcontainer path under "Dev container configuration"
-4. After the Codespace opens, verify:
-   - No red X in the terminal setup output
+1. Add GitHub repo secret `ANTHROPIC_API_KEY` (if not already set)
+2. Push devcontainer to `.devcontainer/<lab-name>/devcontainer.json` on `main`
+3. Go to GitHub → Code → Codespaces → New codespace with options → select the lab config
+4. After Codespace opens, verify:
+   - Lab README opens automatically in preview mode
    - `claude --version` works in a new terminal
-   - Claude Code tab appears in the top-right VS Code panel
+   - `claude "say hello"` returns a real AI response (not a login prompt)
    - Roo Code (🦘) icon appears in the left sidebar
-   - The lab-specific README opens automatically in the editor
-
 
 ---
 
 ## Troubleshooting
 
-### Claude Code Asks for Login Credentials
-
-If Claude Code shows an OAuth login screen or asks for API credentials despite the devcontainer configuration:
-
-**Root Cause:** The `postCreateCommand` may have failed, or the config files weren't created properly.
-
-**Manual Workaround (for existing Codespaces):**
-
-Run these commands in the terminal:
-
+### Claude Code asks for login
+`postStartCommand` may have failed. Run in the terminal:
 ```bash
-# Set environment variables
-export ANTHROPIC_API_KEY=lab-ai-coding-2030
-export ANTHROPIC_BASE_URL=https://litellm-anthropic-proxy-production.up.railway.app
-
-# Make them persist across terminal sessions
-echo 'export ANTHROPIC_API_KEY=lab-ai-coding-2030' >> ~/.bashrc
-echo 'export ANTHROPIC_BASE_URL=https://litellm-anthropic-proxy-production.up.railway.app' >> ~/.bashrc
-
-# Create Claude Code config files
-echo '{"hasCompletedOnboarding":true,"numStartups":3,"installMethod":"global","oauthAccount":null,"primaryApiKey":"lab-ai-coding-2030"}' > ~/.claude.json
-
+printf '{"hasCompletedOnboarding":true,"numStartups":3,"installMethod":"global","oauthAccount":null,"primaryApiKey":"%s"}' "$ANTHROPIC_API_KEY" > ~/.claude.json
 mkdir -p ~/.claude
-echo '{"env":{"ANTHROPIC_API_KEY":"lab-ai-coding-2030","ANTHROPIC_BASE_URL":"https://litellm-anthropic-proxy-production.up.railway.app"}}' > ~/.claude/settings.json
-
-# Reload VS Code window
-# Command Palette (Cmd+Shift+P) → "Developer: Reload Window"
+printf '{"env":{"ANTHROPIC_API_KEY":"%s","ANTHROPIC_BASE_URL":"https://litellm-anthropic-proxy-production.up.railway.app"}}' "$ANTHROPIC_API_KEY" > ~/.claude/settings.json
 ```
+Then: `Ctrl+Shift+P` → "Developer: Reload Window"
 
-After reloading, Claude Code should work without asking for credentials.
+### Wrong README opens
+Check `codespaces.openFiles` — path must be workspace-relative (e.g. `labs/lab-cc-101-first-session/README.md`, not just `README.md`).
 
-**Prevention:** Ensure the `postCreateCommand` in the devcontainer includes all three config steps:
-1. Export to `~/.bashrc`
-2. Create `~/.claude.json`
-3. Create `~/.claude/settings.json`
-
-### Wrong README Opens
-
-If the repo root README opens instead of the lab-specific README:
-
-**Root Cause:** Missing or incorrect `codespaces.openFiles` configuration.
-
-**Fix:** Ensure the devcontainer has:
-
-```json
-"codespaces": {
-  "openFiles": ["labs/lab-cc-XXX-slug/README.md"]
-}
-```
-
-The path must be relative to `/workspaces/ai-coding-lab-exercises/`, not relative to the devcontainer.json file.
+### API errors / quota exceeded
+The shared proxy has a global spend limit. If errors persist, wait a few minutes. Heavy usage may exhaust the budget.

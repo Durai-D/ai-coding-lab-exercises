@@ -3,16 +3,14 @@
 
   "image": "ghcr.io/sanjeev23oct/ailab-cc-base:latest",
 
-  "postCreateCommand": "echo 'export ANTHROPIC_API_KEY=lab-ai-coding-2030' >> ~/.bashrc && echo 'export ANTHROPIC_BASE_URL=https://litellm-anthropic-proxy-production.up.railway.app' >> ~/.bashrc && echo '{\"hasCompletedOnboarding\":true,\"numStartups\":3,\"installMethod\":\"global\",\"oauthAccount\":null,\"primaryApiKey\":\"lab-ai-coding-2030\"}' > ~/.claude.json && mkdir -p ~/.claude && echo '{\"env\":{\"ANTHROPIC_API_KEY\":\"lab-ai-coding-2030\",\"ANTHROPIC_BASE_URL\":\"https://litellm-anthropic-proxy-production.up.railway.app\"}}' > ~/.claude/settings.json",
+  "postCreateCommand": "echo 'export ANTHROPIC_BASE_URL=https://litellm-anthropic-proxy-production.up.railway.app' >> ~/.bashrc && printf '{\"hasCompletedOnboarding\":true,\"numStartups\":3,\"installMethod\":\"global\",\"oauthAccount\":null,\"primaryApiKey\":\"%s\"}' \"$ANTHROPIC_API_KEY\" > ~/.claude.json && mkdir -p ~/.claude && printf '{\"env\":{\"ANTHROPIC_API_KEY\":\"%s\",\"ANTHROPIC_BASE_URL\":\"https://litellm-anthropic-proxy-production.up.railway.app\"}}' \"$ANTHROPIC_API_KEY\" > ~/.claude/settings.json",
 
-  "postStartCommand": "echo '{\"hasCompletedOnboarding\":true,\"numStartups\":3,\"installMethod\":\"global\",\"oauthAccount\":null,\"primaryApiKey\":\"lab-ai-coding-2030\"}' > ~/.claude.json && mkdir -p ~/.claude && echo '{\"env\":{\"ANTHROPIC_API_KEY\":\"lab-ai-coding-2030\",\"ANTHROPIC_BASE_URL\":\"https://litellm-anthropic-proxy-production.up.railway.app\"}}' > ~/.claude/settings.json",
+  "postStartCommand": "printf '{\"hasCompletedOnboarding\":true,\"numStartups\":3,\"installMethod\":\"global\",\"oauthAccount\":null,\"primaryApiKey\":\"%s\"}' \"$ANTHROPIC_API_KEY\" > ~/.claude.json && mkdir -p ~/.claude && printf '{\"env\":{\"ANTHROPIC_API_KEY\":\"%s\",\"ANTHROPIC_BASE_URL\":\"https://litellm-anthropic-proxy-production.up.railway.app\"}}' \"$ANTHROPIC_API_KEY\" > ~/.claude/settings.json",
 
   "postAttachCommand": "code /workspaces/ai-coding-lab-exercises/labs/lab-cc-301-slash-command/README.md",
 
   "remoteEnv": {
-    "ANTHROPIC_BASE_URL": "https://litellm-anthropic-proxy-production.up.railway.app",
-    "ANTHROPIC_API_KEY": "lab-ai-coding-2030"
-  },
+    "ANTHROPIC_BASE_URL": "https://litellm-anthropic-proxy-production.up.railway.app"},
 
   "customizations": {
     "vscode": {
