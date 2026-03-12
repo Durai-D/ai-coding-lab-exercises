@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TaskFlow AI | Focus on what matters</title>
+    <style>
+        :root { --primary: #6366f1; --bg: #0f172a; --text: #f8fafc; }
+        body { margin: 0; background-color: var(--bg); color: var(--text); font-family: 'Inter', system-ui, sans-serif; line-height: 1.6; text-align: center;}
+        .hero { padding: 100px 20px; background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%); }
+        h1 { font-size: 4rem; margin-bottom: 1rem; background: linear-gradient(to right, #818cf8, #c084fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .subtitle { font-size: 1.5rem; color: #94a3b8; max-width: 600px; margin: 0 auto 2rem; }
+        
+        .signup-container { margin-top: 2rem; }
+        input { padding: 15px; border-radius: 8px; border: 1px solid #334155; background: #1e293b; color: white; width: 250px; outline: none; }
+        .cta-button { background-color: var(--primary); color: white; padding: 15px 35px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        .cta-button:hover { background-color: #4f46e5; box-shadow: 0 0 20px rgba(99, 102, 241, 0.4); }
+        
+        #message { margin-top: 1rem; color: #4ade80; display: none; font-weight: bold; animation: fadeIn 0.5s; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+    <section class="hero">
+        <h1>Work with the flow,<br>not against it.</h1>
+        <p class="subtitle">An AI-powered project tool that prioritizes your tasks based on deadlines and your unique work patterns.</p>
+        
+        <div class="signup-container">
+            <input type="email" id="emailInput" placeholder="Enter your email...">
+            <button class="cta-button" onclick="joinWaitlist()">Join the Waitlist</button>
+            <p id="message">✨ You're on the list! We'll reach out soon.</p>
+        </div>
+    </section>
+
+    <script>
+        function joinWaitlist() {
+            const email = document.getElementById('emailInput').value;
+            if (email.includes('@')) {
+                document.getElementById('message').style.display = 'block';
+                document.getElementById('emailInput').style.display = 'none';
+                document.querySelector('.cta-button').style.display = 'none';
+            } else {
+                alert("Please enter a valid email address!");
+            }
+        }
+    </script>
+</body>
+</html>
